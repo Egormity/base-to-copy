@@ -1,6 +1,5 @@
 :root {
   // Colors
-
   --color-grey-light-1: #f7f7f7;
   --color-grey-light-2: #eee;
   --color-grey-light-3: #dedede;
@@ -48,8 +47,23 @@
   --border-dark-4: 0.1rem solid var(--color-grey-dark-4);
 
   // Shadows
-  --shadow--small: 0 0.5rem 1rem var(--color-black01);
-  --shadow--medium: 0 1rem 1.5rem var(--color-black02);
-  --shadow--big: 0 1rem 2rem var(--color-black03);
-  --shadow--huge: 0 2rem 3rem var(--color-black03);
+  --shadow-1: 0 0.5rem 1rem var(--color-black-01);
+  --shadow-2: 0 0.75rem 1rem var(--color-black-015);
+  --shadow-3: 0 1rem 1.5rem var(--color-black-02);
+  --shadow-4: 0 1rem 2rem var(--color-black-02);
+  --shadow-5: 0 2rem 3rem var(--color-black-03);
+  --shadow-6: 0 2rem 3.5rem var(--color-black-03);
+  --shadow-7: 0 3rem 4rem var(--color-black-03);
+
+  //--- TRANSITIONS ---//
+  --trans-dur-primary: 0.2s;
+
+  //--- SPACE ---//
+  --space-huge: 12rem;
+  --space-big: 8rem;
+  --space-medium: 5rem;
+  --space-small: 3rem;
+  --space-smaller: 2rem;
+  --space-tiny: 1rem;
+  --space-tinier: 0.5rem;
 }
