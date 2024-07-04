@@ -1,9 +1,10 @@
 :root {
   // Colors
-  --color-grey-light-1: #f7f7f7;
-  --color-grey-light-2: #eee;
-  --color-grey-light-3: #dedede;
-  --color-grey-light-4: #d0d0d0;
+  --color-grey-light-1: hsl(0, 0%, 97%);
+  --color-grey-light-2: hsl(0, 0%, 95%);
+  --color-grey-light-3: hsl(0, 0%, 93%);
+  --color-grey-light-4: hsl(0, 0%, 87%);
+  --color-grey-light-5: hsl(0, 0%, 82%);
 
   --color-grey-dark-1: #999;
   --color-grey-dark-2: #777;
@@ -23,6 +24,7 @@
 
   --color-black: #000;
   --color-black-01: rgba(0, 0, 0, 0.1);
+  --color-black-015: rgba(0, 0, 0, 0.15);
   --color-black-02: rgba(0, 0, 0, 0.2);
   --color-black-03: rgba(0, 0, 0, 0.3);
   --color-black-04: rgba(0, 0, 0, 0.4);
@@ -58,12 +60,12 @@
   //--- TRANSITIONS ---//
   --trans-dur-primary: 0.2s;
 
-  //--- SPACE ---//
-  --space-huge: 12rem;
-  --space-big: 8rem;
-  --space-medium: 5rem;
-  --space-small: 3rem;
-  --space-smaller: 2rem;
-  --space-tiny: 1rem;
-  --space-tinier: 0.5rem;
+  //--- UNITS ---//
+  --unit-huge: 12rem;
+  --unit-big: 8rem;
+  --unit-medium: 5rem;
+  --unit-small: 3rem;
+  --unit-smaller: 2rem;
+  --unit-tiny: 1rem;
+  --unit-tinier: 0.5rem;
 }

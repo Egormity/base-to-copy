@@ -17,9 +17,6 @@ html {
 
 body {
   box-sizing: border-box;
-  display: grid;
-  @include grid-columns-primary;
-  grid-template-rows: 100vh repeat(auto-fit, min-content);
 }
 
 *,
@@ -35,6 +32,7 @@ body {
 * button {
   cursor: pointer;
   font-family: inherit;
+  outline: none;
 }
 
 * a {
