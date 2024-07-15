@@ -8,7 +8,7 @@
 }
 
 //--- ABSOLUTE POSITION ---//
-@mixin absolute-center {
+@mixin absolute-centered {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -16,7 +16,7 @@
 }
 
 //--- FLEX ---//
-@mixin flex-center {
+@mixin flex-centered {
   display: flex;
   justify-content: center;
   align-items: center;
