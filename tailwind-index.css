@@ -5,6 +5,7 @@
 @layer components {
   /* SCROLL WITH NO SCROLL BAR */
   .no-scrollbar {
+    overflow: scroll;
     -ms-overflow-style: none; /* Internet Explorer 10+ */
     scrollbar-width: none; /* Firefox */
   }
