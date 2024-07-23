@@ -37,3 +37,30 @@
     align-items: center;
   }
 }
+
+#root {
+  color: theme(colors.stone.700);
+}
+
+html {
+  @media only screen and (max-width: 900px) {
+    font-size: 95%;
+  }
+
+  @media only screen and (max-width: 600px) {
+    font-size: 90%;
+  }
+}
+
+/* 
+::selection {
+  color: inherit;
+  background: theme(colors.stone.500);
+}
+
+Code for Firefox
+::-moz-selection {
+  color: inherit;
+  background: theme(colors.stone.500);
+}
+*/

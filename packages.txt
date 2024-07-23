@@ -26,6 +26,15 @@ npm create vite@latest
 --- ESLINT IN VITE --------------------------------------------------------------
 npm i eslint vite-plugin-eslint eslint-config-react-app --save-dev
 
+Configure vite:
+import eslint from 'vite-plugin-eslint';
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [react(), eslint()],
+});
+
+
 in .eslint.cjs to remove problem with validation:
 "rules": {
   "react/prop-types": "off"
