@@ -128,7 +128,7 @@ npm i react-error-boundary
 
 
 
-
+npm i --save @supabase/supabase-js
 
 
 
