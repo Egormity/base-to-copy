@@ -52,6 +52,10 @@ html {
   }
 }
 
+* :disabled {
+  cursor: not-allowed;
+}
+
 /* 
 ::selection {
   color: inherit;
