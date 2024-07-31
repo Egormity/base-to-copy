@@ -4,9 +4,22 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        default: ['Noto Sans', 'sans-serif'],
-        bold: ['Bebas Neue'],
-        cursive: ['Cedarville Cursive'],
+        default: ['Poppins', 'sans-serif'],
+        cursive: ['Nothing You Could Do', 'sans-serif'],
+      },
+
+      colors: {
+        'primary-red': '#ff6240',
+        'primary-red-dark': '#5f2e26',
+      },
+
+      backgroundColor: {
+        'primary-red': '#ff6240',
+        'primary-red-dark': '#5f2e26',
+      },
+
+      transitionDuration: {
+        primary: '400ms',
       },
 
       screens: {

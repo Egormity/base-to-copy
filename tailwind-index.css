@@ -3,6 +3,11 @@
 @tailwind utilities;
 
 @layer components {
+  :root {
+    --toast-bg-dark: theme(backgroundColor.zinc.800);
+    --toast-text-light: theme(backgroundColor.zinc.100);
+  }
+
   /* SCROLL WITH NO SCROLL BAR */
   .no-scrollbar {
     overflow: scroll;
@@ -30,41 +35,165 @@
     transform: translate(-50%, -50%);
   }
 
+  .fixed-centered {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
   /* FLEX */
   .flex-centered {
     display: flex;
     justify-content: center;
     align-items: center;
   }
-}
 
-#root {
-  color: theme(colors.stone.700);
-}
-
-html {
-  @media only screen and (max-width: 900px) {
-    font-size: 95%;
+  @keyframes rotatation {
+    to {
+      transform: rotate(1turn);
+    }
   }
 
-  @media only screen and (max-width: 600px) {
-    font-size: 90%;
+  .spinner {
+    margin: 4.8rem auto;
+
+    width: 6.4rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(farthest-side, theme('colors.primary-yellow-dark') 94%, #0000) top/10px 10px
+        no-repeat,
+      conic-gradient(#0000 30%, theme('colors.primary-yellow-light'));
+    mask: radial-gradient(farthest-side, #0000 calc(100% - 10px), #000 0);
+    animation: rotatation 1.5s infinite linear;
   }
-}
 
-* :disabled {
-  cursor: not-allowed;
-}
+  .spinner-mini {
+    width: 2.4rem;
+    height: 2.4rem;
+    animation: rotatation 1.5s infinite linear;
+  }
 
-/* 
-::selection {
-  color: inherit;
-  background: theme(colors.stone.500);
-}
+  @keyframes rollUp {
+    from {
+      transform: translate(0);
+      opacity: 0;
+    }
 
-Code for Firefox
-::-moz-selection {
-  color: inherit;
-  background: theme(colors.stone.500);
+    to {
+      transform: translateY(-1.75rem);
+      opacity: 1;
+    }
+  }
+
+  .form-required {
+    animation: rollUp theme('transitionDuration.primary') ease-out forwards;
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: theme('colors.primary-red');
+  }
+
+  .padding-page-x {
+    padding-left: theme(padding.4);
+    padding-right: theme(padding.4);
+
+    @media only screen and (max-width: 1200px) {
+      padding-left: theme(padding.4);
+      padding-right: theme(padding.4);
+    }
+  }
+
+  .padding-page-t {
+    padding-top: theme(padding.28);
+  }
+
+  .padding-page-b {
+    padding-bottom: theme(padding.10);
+  }
+
+  .max-width-page {
+    max-width: 87.5%;
+    padding-left: theme(padding.12);
+    padding-right: theme(padding.12);
+
+    margin-left: auto;
+    margin-right: auto;
+
+    @media only screen and (max-width: 1500px) {
+      max-width: 92.5vw;
+    }
+
+    @media only screen and (max-width: 1200px) {
+      max-width: 95vw;
+      padding-left: theme(padding.4);
+      padding-right: theme(padding.4);
+    }
+
+    @media only screen and (max-width: 900px) {
+      max-width: 100vw;
+    }
+  }
+
+  .max-width-medium {
+    max-width: 65vw;
+    margin-left: auto;
+    margin-right: auto;
+
+    padding-left: theme(padding.4);
+    padding-right: theme(padding.4);
+
+    @media only screen and (max-width: 1200px) {
+      padding-left: theme(padding.4);
+      padding-right: theme(padding.4);
+    }
+
+    @media only screen and (max-width: 1000px) {
+      max-width: 85vw;
+    }
+
+    @media only screen and (max-width: 600px) {
+      max-width: 100vw;
+    }
+  }
+
+  .max-width-text {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 60rem;
+  }
+
+  body {
+    font-family: theme('fontFamily.default');
+    color: theme('textColor.zinc.100');
+    background-image: url('/global/landing-bg.webp');
+    background-attachment: fixed;
+    min-height: 100vh;
+    background-position: center;
+    background-size: cover;
+  }
+
+  html {
+    @media only screen and (max-width: 900px) {
+      font-size: 95%;
+    }
+
+    @media only screen and (max-width: 600px) {
+      font-size: 90%;
+    }
+  }
+
+  * :disabled {
+    cursor: not-allowed;
+  }
+
+  /* ::selection {
+    color: inherit;
+    background: theme(colors.zinc.500);
+  }
+  
+  Code for Firefox ::-moz-selection {
+    color: inherit;
+    background: theme(colors.zinc.500);
+  } */
 }
-*/
