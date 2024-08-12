@@ -127,13 +127,13 @@ npm i react-error-boundary
 
 
 
-
+---------------------------------------------------------------------------------
 npm i --save @supabase/supabase-js
 
 
 
-
-
+---------------------------------------------------------------------------------
+npm i -D @babel/core @babel/preset-env @babel/preset-react @babel/register
 
 
 
