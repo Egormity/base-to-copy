@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+   /* html {
+    @media only screen and (max-width: 900px) {
+      font-size: 95%;
+    }
+
+    @media only screen and (max-width: 600px) {
+      font-size: 90%;
+    }
+  } */
+
+  body {
+    font-family: theme('fontFamily.default');
+    color: theme('textColor.zinc.950');
+  }
+
+  * :disabled {
+    cursor: not-allowed;
+  }
+}
