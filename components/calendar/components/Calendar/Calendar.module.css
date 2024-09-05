@@ -1,0 +1,98 @@
+:root {
+	--color-text: #000000;
+	--color-text-selected: #ffffff;
+	--color-placeholder: rgba(0, 0, 0, 0.3);
+	--color-additional: #6750b1;
+	--color-additional7: #a38ee6;
+	--background-color-calendar: #ffffff;
+	--background-color-calendar-header: #ffffff;
+
+	--images-arrow: url("../../static/images/arrow.svg");
+}
+
+.calendar__container {
+	@apply flex flex-col items-center justify-center gap-4 p-2;
+}
+
+.calendar__selected-date {
+	@apply bg-stone-500 rounded-full px-6 py-1.5 text-stone-100;
+}
+
+.calendar {
+	@apply w-[325px] p-1 capitalize bg-[var(--background-color-calendar)];
+}
+
+.calendar__header {
+	@apply relative p-2 flex items-center justify-center gap-6 font-semibold bg-[var(--background-color-calendar-header)] text-[var(--color-text)];
+	/* box-shadow: 0px 2px 10px -1px rgba(0, 0, 0, 0.2); */
+}
+
+.calendar__header__arrow__left,
+.calendar__header__arrow__right {
+	@apply w-4 h-4 cursor-pointer [background-image:var(--images-arrow)] bg-no-repeat bg-center;
+}
+
+.calendar__header__arrow__right {
+	@apply rotate-180;
+}
+
+.calendar__body {
+	@apply rounded-lg p-2;
+}
+
+.calendar__week__names {
+	@apply h-[30px] font-semibold text-[12px] text-center grid grid-cols-7 gap-1.5 items-center text-[var(--color-additional)];
+}
+
+.calendar__days {
+	@apply relative grid grid-cols-7 gap-1 justify-items-center items-center text-[var(--color-text)] cursor-pointer text-sm;
+}
+
+.calendar__days--selected-week {
+	@apply absolute bg-[var(--color-additional)] rounded-full w-full z-[3];
+}
+
+.calendar__day {
+	@apply relative z-[5] flex items-center justify-center w-[30px] h-[30px] rounded-full;
+}
+
+.calendar__day:hover {
+	@apply bg-[var(--color-additional7)];
+}
+
+.calendar__additional__day {
+	@apply cursor-pointer text-[var(--color-placeholder)];
+}
+
+.calendar__pick__item,
+.calendar__unchoosable__year {
+	@apply p-1 flex items-center justify-center cursor-pointer rounded-full border text-sm border-stone-300 text-stone-400;
+}
+
+.calendar__pick__item:hover {
+	@apply border-[var(--color-additional7)] text-[var(--color-additional7)];
+}
+
+.calendar__today__item {
+	@apply bg-black/15;
+}
+
+.calendar__selected__item--bg {
+	@apply bg-[var(--color-additional)] text-[var(--color-text-selected)];
+}
+
+.calendar__selected__item--bg:hover {
+	@apply bg-[var(--color-additional)];
+}
+
+.calendar__selected__item--border {
+	@apply border-[var(--color-additional)] text-[var(--color-additional)];
+}
+
+.calendar__pick__items__container {
+	@apply grid grid-cols-3 grid-rows-4 gap-2 font-medium text-center text-lg text-[var(--color-text)];
+}
+
+.calendar__unchoosable__year {
+	@apply opacity-50;
+}
