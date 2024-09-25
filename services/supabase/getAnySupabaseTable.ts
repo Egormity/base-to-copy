@@ -1,4 +1,4 @@
-import { getAnyTableProps } from '../utils/types';
+import { getAnyTableProps } from '../../utils/types';
 import { supabase } from './supabase';
 
 export async function getAnySupabaseTable({

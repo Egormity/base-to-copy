@@ -1,0 +1,53 @@
+// src/modals/SelectModal.module.scss
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: scale(0.95);
+	}
+	to {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+@keyframes fadeOut {
+	from {
+		opacity: 1;
+		transform: scale(1);
+	}
+	to {
+		opacity: 0;
+		transform: scale(0.95);
+	}
+}
+
+.modal-overlay {
+	position: absolute;
+	top: 77px;
+	left: 0;
+	z-index: 50;
+	width: 100%;
+}
+
+.modal-content {
+	@apply no-scrollbar;
+
+	transition:
+		transform 0.3s,
+		opacity 0.3s;
+}
+
+.modal-backdrop {
+	position: fixed;
+	inset: 0;
+	background-color: transparent;
+	z-index: 40;
+}
+
+.fade-in {
+	animation: fadeIn 0.3s forwards;
+}
+
+.fade-out {
+	animation: fadeOut 0.3s forwards;
+}

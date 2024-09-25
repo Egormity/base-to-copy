@@ -1,0 +1,55 @@
+.input-wrapper {
+	@apply flex flex-col gap-2 w-full;
+
+	.input-title {
+		@apply text-[#9B9B9B] text-xs font-light text-left;
+
+		> span {
+			@apply text-red-500;
+		}
+	}
+
+	.container {
+		@apply border-[1px] border-[#E4E4E4] flex items-center justify-center rounded-lg px-4 h-[52.5px] min-w-[52.5px];
+
+		input {
+			@apply outline-none  rounded-lg text-sm flex-1;
+		}
+
+		> div {
+			> svg {
+				@apply mr-4 cursor-pointer;
+			}
+		}
+	}
+}
+
+.input-wrapper-big {
+	@apply flex flex-col gap-2;
+
+	.input-title-big {
+		@apply text-[#9B9B9B] text-xs font-light text-left;
+
+		> span {
+			@apply text-red-500;
+		}
+	}
+
+	.container-big {
+		@apply flex justify-center items-center;
+
+		label {
+			@apply flex justify-center items-center rounded-2xl  hover:bg-indigo-800 text-indigo-800 hover:text-white w-14 h-14;
+		}
+
+		input {
+			@apply outline-none rounded-lg text-sm flex-1;
+		}
+
+		> div {
+			> svg {
+				@apply mr-4 cursor-pointer;
+			}
+		}
+	}
+}

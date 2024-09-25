@@ -1,0 +1,15 @@
+.wrapper-input {
+	@apply relative inline-block w-12 h-[26px] cursor-pointer;
+
+	> input {
+		@apply opacity-0 w-0 h-0;
+	}
+
+	.input-background {
+		@apply absolute top-0 left-0 right-0 bottom-0 transition rounded-full;
+	}
+
+	.input-toggle {
+		@apply absolute left-0 top-0 bottom-0 bg-white rounded-full w-5 h-5 m-[3px] transition-transform;
+	}
+}

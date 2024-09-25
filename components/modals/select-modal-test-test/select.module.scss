@@ -1,0 +1,111 @@
+.input-wrapper {
+    animation: slide-left 0.2s ease-in-out;
+
+    @apply flex flex-row gap-2 items-center;
+
+    .input-container {
+        @apply max-w-[20px] max-h-[20px];
+        display: flex;
+        align-items: center;
+    }
+
+    .input-label {
+        > span {
+            overflow: hidden;
+            text-decoration: none;
+            transition: height 300ms cubic-bezier(0.4, 0, 0.23, 1);
+        }
+    }
+
+    input[type="checkbox"] {
+        height: 0;
+        width: 0;
+    }
+
+    input:checked {
+        ~ label {
+            > span {
+                border: 0.6em solid var(--color-active);
+                animation: shrink-bounce 200ms cubic-bezier(0.4, 0, 0.23, 1);
+                position: relative;
+
+                &:after {
+                    content: "";
+                    position: absolute;
+                    top: 0.4em;
+                    left: -0.4em;
+                    border-right: 3px solid transparent;
+                    border-bottom: 3px solid transparent;
+                    transform: rotate(45deg);
+                    transform-origin: 0% 100%;
+                    animation: checkbox-check 125ms 250ms cubic-bezier(0.4, 0, 0.23, 1) forwards;
+                }
+            }
+        }
+    }
+
+    label {
+        > span {
+            display: flex;
+            justify-content: center;
+
+            background: transparent;
+            cursor: pointer;
+            height: 20px !important;
+            width: 20px !important;
+            border: 2px solid #E9E9E9;
+            border-radius: 2px;
+
+            transition: all 250ms cubic-bezier(0.4, 0, 0.23, 1);
+        }
+    }
+}
+
+@keyframes slide-left {
+    from {
+        transform: translateY(-30%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes checkbox-check {
+    0% {
+        width: 0;
+        height: 0;
+        border-color: #ffffff;
+        transform: translate3d(0, 0, 0) rotate(45deg);
+    }
+
+    33% {
+        width: 0.5em;
+        height: 0;
+        transform: translate3d(0, 0, 0) rotate(45deg);
+    }
+
+    100% {
+        width: 0.35em;
+        height: 0.8em;
+        border-radius: 1px;
+        border-color: #ffffff;
+        transform: translate3d(0, -1.1em, 0) rotate(45deg);
+    }
+}
+
+@keyframes shrink-bounce {
+    0% {
+        transform: scale(1);
+    }
+
+    33% {
+        transform: scale(0.85);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
