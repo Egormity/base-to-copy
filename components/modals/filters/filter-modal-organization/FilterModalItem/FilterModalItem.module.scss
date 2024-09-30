@@ -1,15 +1,15 @@
 .wrapper-item {
-    @apply border-y-[1px] border-[#E9E9E9] p-5 flex flex-col gap-4;
+  @apply border-y-[1px] border-primary-gray-light p-5 flex flex-col gap-4;
 
-    .container-item {
-        @apply flex flex-row items-center justify-between cursor-pointer;
+  .container-item {
+    @apply flex flex-row items-center justify-between cursor-pointer;
+  }
+
+  .container-menu {
+    @apply flex flex-col gap-4;
+
+    > li {
+      @apply flex flex-row gap-1;
     }
-
-    .container-menu {
-        @apply flex flex-col gap-4;
-
-        > li {
-            @apply flex flex-row gap-1;
-        }
-    }
+  }
 }
