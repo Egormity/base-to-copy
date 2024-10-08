@@ -57,7 +57,7 @@ const TypesTable = <TData extends object>({
                   <td key={cell.id} className='text-left p-5 border-r border-gray-300 last-of-type:max-w-10'>
                     {cell.column.id == 'isActive' ? (
                       cell.getValue() ? (
-                        <div className='text-[#24D829]'>Работает</div>
+                        <div className='text-primary-green'>Работает</div>
                       ) : (
                         <div className='text-primary-red'>Не работает</div>
                       )
