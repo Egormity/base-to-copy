@@ -14,6 +14,7 @@ export const openFileImage = ({
 	// @ts-ignore
 	const formattedName = name.replaceAll(" ", "_").replaceAll(".", "-");
 
+	// @ts-ignore
 	const addExtension = determineImageByExtension(formattedName.slice(-5))
 		? ""
 		: `-${extension.replace(".", "")}`;

@@ -11,8 +11,6 @@ export const openFileData = (fileData: string, fileType: string): string => {
 	});
 	const url = URL.createObjectURL(blob);
 
-	console.log(url);
-
 	window.open(url, "_blank");
 
 	return url;
