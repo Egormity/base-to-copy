@@ -1,0 +1,21 @@
+.wrapper {
+	@apply flex flex-col gap-2;
+
+	> span {
+		@apply text-xs text-primary-gray-dark;
+	}
+
+	.container-label {
+		@apply flex bg-[#F6F6F6] rounded-lg p-2  items-center justify-between gap-2 min-h-[36px];
+
+		> div {
+			.title {
+				@apply text-sm font-light;
+			}
+
+			.subtitle {
+				@apply text-xs text-[#727272];
+			}
+		}
+	}
+}

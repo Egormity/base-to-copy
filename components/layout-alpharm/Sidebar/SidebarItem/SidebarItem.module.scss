@@ -1,0 +1,7 @@
+.wrapper-item {
+	@apply flex  gap-2 text-base font-normal py-[14px] pr-5 rounded-l-2xl relative cursor-pointer;
+
+	.span-label {
+		@apply absolute right-0 w-[3px] h-6 rounded-l-sm top-4 bg-color-active border-color-active;
+	}
+}

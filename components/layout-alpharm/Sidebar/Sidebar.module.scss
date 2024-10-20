@@ -1,0 +1,51 @@
+.wrapper-sidebar {
+	@apply fixed min-h-screen z-[62] transition-all py-[18px] duration-100 pl-5 border-r-[1px] border-primary-gray-light bg-white text-nowrap;
+
+	.wrapper-label {
+		@apply flex justify-start flex-col pr-5;
+
+		.company-name {
+			@apply text-xl;
+		}
+
+		.admin-panel {
+			@apply text-sm font-normal text-primary-gray-dark;
+		}
+	}
+
+	.company-logo {
+		@apply max-w-full h-full  object-contain rounded-[8px];
+	}
+
+	.menu-list {
+		@apply mt-[18px];
+	}
+
+	.logo-container {
+		@apply flex absolute bottom-5 justify-center items-center w-[120px] h-[120px] rounded-2xl bg-[#F6F6F6];
+
+		.logo-text {
+			@apply text-primary-gray-light;
+		}
+	}
+
+	.burger-icon-container {
+		@apply w-[70px] flex items-center mb-[42px];
+
+		> svg {
+			@apply cursor-pointer;
+		}
+	}
+
+	.menu-item {
+		@apply flex flex-col gap-6;
+
+		.active-indicator {
+			@apply absolute right-0 w-[3px] h-6 rounded-l-sm top-[2px] bg-color-active border-color-active;
+		}
+	}
+}
+
+.overlay {
+	@apply fixed inset-0 bg-black bg-opacity-button-disabled z-[41];
+}

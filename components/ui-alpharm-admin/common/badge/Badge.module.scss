@@ -1,0 +1,11 @@
+.wrapper-badge {
+	@apply flex  gap-2 items-center p-2 border-primary-gray-dark border-[1px] rounded-lg w-fit;
+
+	.title {
+		@apply text-primary-gray-dark;
+	}
+
+	.badge {
+		@apply flex  gap-2 items-center cursor-pointer;
+	}
+}

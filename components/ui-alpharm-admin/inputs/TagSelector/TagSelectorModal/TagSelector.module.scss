@@ -1,0 +1,7 @@
+.input-title {
+	@apply text-primary-gray-dark text-xs font-light text-left;
+
+	> span {
+		@apply text-red-500;
+	}
+}

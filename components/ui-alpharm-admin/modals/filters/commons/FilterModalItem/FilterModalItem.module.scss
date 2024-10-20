@@ -1,0 +1,35 @@
+.wrapper-item {
+	@apply border-y-[1px] border-primary-gray-light p-5 flex flex-col gap-4;
+}
+
+.container-item {
+	@apply flex  items-center justify-between cursor-pointer;
+}
+
+.container-menu {
+	@apply flex flex-col gap-4;
+
+	> li {
+		@apply flex  gap-1;
+	}
+}
+
+.saveButton {
+	@apply bg-[--color-active];
+	color: white;
+	border: none;
+	padding: 10px 20px;
+	font-weight: 700;
+	border-radius: 18px;
+	cursor: pointer;
+}
+
+.cancelButton {
+	background-color: #eeeeee;
+	color: #4a4a4a;
+	border: none;
+	padding: 10px 20px;
+	font-weight: 700;
+	border-radius: 18px;
+	cursor: pointer;
+}

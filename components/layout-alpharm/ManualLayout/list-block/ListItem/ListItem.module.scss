@@ -1,0 +1,6 @@
+.wrapper-item {
+	@apply py-[16px] px-5 flex  items-center justify-between border-b-[1px] hover:bg-[var(--color-inactive)] cursor-pointer;
+	> span {
+		@apply text-base;
+	}
+}

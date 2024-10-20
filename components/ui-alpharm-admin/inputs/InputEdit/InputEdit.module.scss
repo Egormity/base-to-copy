@@ -1,0 +1,32 @@
+.input-wrapper {
+	@apply flex flex-col gap-2 w-full;
+
+	.input-title {
+		@apply text-primary-gray-dark text-xs font-light text-left;
+
+		> span {
+			@apply text-red-500;
+		}
+	}
+
+	.container {
+		@apply border-[1px] border-primary-gray-light flex  items-center rounded-lg w-full;
+
+		input {
+			@apply outline-none p-4 rounded-lg text-sm flex-1 w-full;
+		}
+
+		&::placeholder {
+			color: #888;
+			font-style: italic;
+			font-weight: 300;
+			font-size: 14px;
+		}
+
+		> div {
+			> svg {
+				@apply mr-4 cursor-pointer;
+			}
+		}
+	}
+}

@@ -1,0 +1,59 @@
+.container > * {
+	color: currentColor !important;
+
+	> * {
+		color: currentColor !important;
+
+		> * {
+			color: currentColor !important;
+		}
+	}
+}
+
+.pageTableContainer {
+	@apply scrollbar-thin border-t border-primary-gray-light h-[calc(100vh-70px)] overflow-y-auto;
+}
+
+.table {
+	@apply w-full h-full;
+}
+
+.theadRow {
+	height: 30px !important;
+}
+
+.theadCell {
+	@apply text-center py-[18px] px-0 border-r border-b border-primary-gray-light;
+}
+
+.theadCellFirst {
+	@apply text-left;
+}
+
+.tbodyRow {
+	@apply text-sm;
+}
+
+.scrollHeaderThead {
+	@apply sticky top-0 bg-white z-10 outline outline-1 outline-primary-gray-light;
+}
+
+.tbodyCell {
+	@apply text-center border-r border-primary-gray-light;
+}
+
+.tbodyCellFirst {
+	@apply text-left;
+}
+
+.statusActive {
+	@apply text-[#24D829];
+}
+
+.statusInactive {
+	@apply text-primary-red;
+}
+
+.additionalRowCell {
+	@apply h-full border-r border-r-primary-gray-light;
+}

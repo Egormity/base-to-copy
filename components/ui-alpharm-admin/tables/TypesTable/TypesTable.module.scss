@@ -1,0 +1,11 @@
+.container > * {
+	color: currentColor !important;
+
+	> * {
+		color: currentColor !important;
+
+		> * {
+			color: currentColor !important;
+		}
+	}
+}

@@ -1,0 +1,14 @@
+.spinner {
+	@apply relative h-[64px] w-[64px];
+	animation: amine 1.75s infinite cubic-bezier(0.7, -0.01, 0.4, 1);
+}
+
+@keyframes amine {
+	from {
+		transform: rotate(0deg);
+	}
+
+	to {
+		transform: rotate(360deg);
+	}
+}

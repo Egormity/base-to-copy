@@ -1,0 +1,20 @@
+.wrapper {
+	.input-wrapper {
+		@apply flex flex-col gap-2;
+
+		.input-title {
+			@apply text-primary-gray-dark text-xs font-light text-left;
+
+			> span {
+				@apply text-red-500;
+			}
+		}
+
+		> .container {
+			@apply flex  border-[1px] border-primary-gray-light justify-between items-center rounded-lg;
+			> input {
+				@apply outline-none p-4 rounded-lg text-sm flex-1 truncate disabled:text-primary-gray-dark;
+			}
+		}
+	}
+}

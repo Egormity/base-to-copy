@@ -1,0 +1,28 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+}
+
+.bar {
+    width: 4px;
+    height: 10px;
+    border-radius: 8px;
+}
+
+.bar-done {
+    @extend .bar;
+    background-color: #24d829;
+}
+
+.bar-planned {
+    @extend .bar;
+    background-color: #ffe143;
+}
+
+.bar-pending {
+    @extend .bar;
+    background-color: #e9e9e9;
+}

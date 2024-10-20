@@ -1,0 +1,11 @@
+.wrapper-list {
+	@apply border-r-[1px] border-primary-gray-light min-h-screen max-h-screen;
+
+	.title {
+		@apply py-[18px] px-5 border-b-[1px] h-[70px] text-[20px];
+	}
+
+	.menu {
+		@apply overflow-y-auto no-scrollbar max-h-[calc(100vh-70px)];
+	}
+}

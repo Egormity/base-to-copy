@@ -15,6 +15,7 @@ dist-ssr
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
+!.vscode/launch.json
 .idea
 .DS_Store
 *.suo
@@ -22,6 +23,15 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+/test-results/
+/playwright-report/
+/playwright/.cache/
 
-# My files
-/000-project-files
+# storybook
+storybook-static
+
+# tests
+/coverage/
+
+# generated
+*.gen.ts
