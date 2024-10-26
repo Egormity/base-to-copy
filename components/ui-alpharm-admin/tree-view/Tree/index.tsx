@@ -72,7 +72,7 @@ interface ITreeViewProps {
 
 	itemToGoUp?: ITreeNode;
 
-	onItemClick?: () => void;
+	onItemClick?: (item: ITreeNode) => void;
 
 	isToChangeUrl?: boolean;
 }
@@ -111,6 +111,10 @@ const TreeView: FC<ITreeViewProps> = ({
 
 	isToChangeUrl,
 }) => {
+	loadItems = loadItems?.filter((item, i, arr) =>
+		arr.slice(i + 1).every((el) => el.id !== item.id)
+	);
+
 	// SET TREE DATA
 	const [treeData, setTreeData] = useState<Array<ITreeNode> | undefined>([]);
 
@@ -176,10 +180,12 @@ const TreeView: FC<ITreeViewProps> = ({
 
 	// SET CLICK ID WHEN ITEM DELETED
 	useEffect(() => {
-		if (clickId === deleted.at(-1)?.id) {
-			onClickId(deleted.at(-1)?.parentId || undefined);
+		if (deleted.length > 0 && clickId === deleted.at(-1)?.id) {
+			const newId = deleted.at(-1)?.parentId || undefined;
+			onNodeId(newId);
+			onClickId(newId);
 		}
-	}, [deleted, onClickId, clickId]);
+	}, [deleted, onClickId, clickId, onNodeId]);
 
 	// REVALIDATE TREE WHEN ITEM CHANGED
 	useEffect(() => {
@@ -189,45 +195,43 @@ const TreeView: FC<ITreeViewProps> = ({
 		if (!revalidateNode.newItem.parentId) {
 			// @ts-ignore
 			setTreeData((state) =>
-				state ? [{ ...state[0], name: revalidateNode.newItem.name }] : undefined
+				state ? [{ ...state[0], name: revalidateNode.newItem.name }] : state
 			);
 			return;
 		}
 
 		const isTheSameParent =
-			revalidateNode.newItem.parentId === revalidateNode.oldItem.parentId;
+			revalidateNode.oldItem.parentId === revalidateNode.newItem.parentId;
 
-		setTreeData((state) => {
-			const recursiveFunction = (node: ITreeNode): ITreeNode => {
-				if (!node.children || node.children.length === 0) return node;
+		if (isTheSameParent) {
+			setTreeData((state) => {
+				const recursive = (node: ITreeNode): ITreeNode => {
+					if (node.id === revalidateNode.newItem.id) {
+						return { ...node, name: revalidateNode.newItem.name };
+					}
 
-				return {
-					...node,
-					children: [
-						...node.children
-							.filter(
-								(item) =>
-									isTheSameParent ||
-									!(
-										item.id === revalidateNode.newItem.id &&
-										node.parentId !== revalidateNode.newItem.parentId
-									)
-							)
-							.map((item) =>
-								isTheSameParent && item.id === revalidateNode.newItem.id
-									? { ...revalidateNode.newItem, children: item.children }
-									: item
-							),
-						...(node.id === revalidateNode.newItem.parentId && !isTheSameParent
-							? [{ ...revalidateNode.newItem }]
-							: []),
-					].map((item) => recursiveFunction(item)),
+					if (node.children && node.children?.length > 0) {
+						return {
+							...node,
+							children: node.children.map((item) => recursive(item)),
+						};
+					}
+
+					return node;
 				};
-			};
 
-			return state?.[0] ? [recursiveFunction(state[0])] : [];
-		});
-	}, [revalidate, isToChangeUrl, handleItemSelectionToggle, mainItems]);
+				return state?.map(recursive);
+			});
+		} else {
+			setTimeout(() => {
+				onNodeId(revalidateNode.oldItem.parentId || undefined);
+			}, 500);
+
+			setTimeout(() => {
+				onNodeId(revalidateNode.newItem.parentId || undefined);
+			}, 2000);
+		}
+	}, [revalidate, isToChangeUrl, onNodeId]);
 
 	// HANDLE GO BACK FOLDER
 	const [previouslyActiveItemId, setPreviouslyActiveItemId] =
@@ -237,7 +241,12 @@ const TreeView: FC<ITreeViewProps> = ({
 			onClickId(itemToGoUp.parentId);
 			!previouslyActiveItemId && setPreviouslyActiveItemId(itemToGoUp.id);
 		}
-	}, [itemToGoUp, onClickId]);
+	}, [
+		itemToGoUp,
+		onClickId,
+		setPreviouslyActiveItemId,
+		previouslyActiveItemId,
+	]);
 
 	// ADD CHILDREN RECURSIVELY
 	useEffect(() => {
@@ -315,22 +324,6 @@ const TreeView: FC<ITreeViewProps> = ({
 			setAllVisibleItems((s) => [...s, ...mainItems]);
 	}, [mainItems, allVisibleItems]);
 
-	useEffect(() => {
-		if (childrenItems)
-			setAllVisibleItems?.((state) =>
-				[
-					...state,
-					...childrenItems.filter(
-						(node) => !state.some((n) => n.id === node.id)
-					),
-				].filter(
-					(item) =>
-						expandedItems.includes(item.id) ||
-						expandedItems.includes(item.parentId + "")
-				)
-			);
-	}, [setAllVisibleItems, childrenItems, treeSelection, expandedItems]);
-
 	// FIX CHECKED ITEMS
 	const [checkedState, setCheckedState] = useState<Array<{ id: string }>>([]);
 
@@ -341,14 +334,14 @@ const TreeView: FC<ITreeViewProps> = ({
 				?.filter((node) => {
 					return (
 						// FILTER ERROR WHEN ITEM IS NOT MOVED
-						!revalidate.some(
-							(item) =>
-								node.parentId &&
-								node.id === item.newItem.id &&
-								node.parentId !== item.newItem.parentId
-						) &&
+						// !revalidate.some(
+						// 	(item) =>
+						// 		node.parentId &&
+						// 		node.id === item.newItem.id &&
+						// 		node.parentId !== item.newItem.parentId
+						// ) &&
 						// FILTER DELETED
-						!deleted.some((item) => item.id === node.id) &&
+						// !deleted.some((item) => item.id === node.id) &&
 						// FILTER HIDDEN ITEMS
 						!dontShowItemIds?.some((id) => id === node.id)
 					);
@@ -364,6 +357,10 @@ const TreeView: FC<ITreeViewProps> = ({
 						!!checkedItems?.some((item) => item.id === node.id) ||
 						!!checkedState?.some((item) => item.id === node.id);
 
+					if (!allVisibleItems.some((item) => item.id === node.id)) {
+						setAllVisibleItems((s) => [...s, node]);
+					}
+
 					return (
 						<StyledTreeItem
 							key={`${node.id}`}
@@ -378,7 +375,7 @@ const TreeView: FC<ITreeViewProps> = ({
 								<div
 									className="flex items-center relative group"
 									onClick={() => {
-										onItemClick?.();
+										onItemClick?.(node);
 										if (previouslyActiveItemId === node.id) {
 											handleItemSelectionToggle(false, node.id, true, true);
 											setPreviouslyActiveItemId(undefined);
@@ -447,8 +444,12 @@ const TreeView: FC<ITreeViewProps> = ({
 									node.id,
 									false
 								) as React.ReactNode)
-							) : (node.hasChildren && node.children === undefined) ||
-							  revalidate.some((item) => item.newItem.parentId === node.id) ? (
+							) : // : (node.hasChildren && node.children === undefined) ||
+							//   revalidate.some((item) => item.newItem.parentId === node.id) ? (
+							// <span />
+
+							// )
+							node.hasChildren ? (
 								<span />
 							) : null}
 						</StyledTreeItem>
@@ -475,9 +476,8 @@ const TreeView: FC<ITreeViewProps> = ({
 			nodeId,
 			previouslyActiveItemId,
 			setPreviouslyActiveItemId,
-			deleted,
 			onItemClick,
-			revalidate,
+			// revalidate,
 		]
 	);
 
@@ -491,33 +491,39 @@ const TreeView: FC<ITreeViewProps> = ({
 	const handleDefaultExpandedItemsChange = (
 		_: React.SyntheticEvent,
 		ids: Array<string>
-	) => setExpandedItems(ids);
+	) => {
+		setExpandedItems(ids);
+	};
 
 	// RETURN LOADING
-	if (isLoadingMain || isLoadingLoadItems)
+	if (isLoadingMain || isLoadingLoadItems) {
 		return (
 			<div className="w-full mt-10">
 				<Loader />
 			</div>
 		);
+	} else {
+		apiRef.current?.focusItem(null, clickId);
+
+		return (
+			<SimpleTreeView
+				apiRef={apiRef}
+				aria-label="customized"
+				onExpandedItemsChange={handleDefaultExpandedItemsChange}
+				defaultExpandedItems={loadItems?.map((item) => item.id)}
+				slots={{
+					expandIcon: ExpandIcon,
+					collapseIcon: CollapsedIcon,
+				}}
+				sx={{ height: 240, flexGrow: 1 }}
+				onItemSelectionToggle={handleItemSelectionToggle}
+			>
+				{memoizedTree}
+			</SimpleTreeView>
+		);
+	}
 
 	// RETURN TREE
-	return (
-		<SimpleTreeView
-			apiRef={apiRef}
-			aria-label="customized"
-			onExpandedItemsChange={handleDefaultExpandedItemsChange}
-			defaultExpandedItems={loadItems?.map((item) => item.id)}
-			slots={{
-				expandIcon: ExpandIcon,
-				collapseIcon: CollapsedIcon,
-			}}
-			sx={{ height: 240, flexGrow: 1 }}
-			onItemSelectionToggle={handleItemSelectionToggle}
-		>
-			{memoizedTree}
-		</SimpleTreeView>
-	);
 };
 
 export default TreeView;

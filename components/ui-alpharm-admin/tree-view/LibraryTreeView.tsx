@@ -1,5 +1,6 @@
 import { useRouter } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
 
 import { ReactComponent as IconFolder } from "@/assets/icons/folder.svg";
 
@@ -10,6 +11,8 @@ import {
 	useGetLibraryFolders,
 } from "@/api/commons/library-folders";
 import { useGetLibraryFoldersById } from "@/api/commons/library-folders/getById";
+
+import SearchNotFoundMessage from "../Messages/SearchNotFoundMessage";
 
 import Tree from "./Tree";
 import type { ILibraryFolder } from "@/services/commons";
@@ -156,9 +159,18 @@ export default function LibraryTreeView({
 			id: fetchItemId,
 		});
 
+	const { doAfterDebounce: doAfterDebounceLostChild } =
+		useDoAfterDebounce(3000);
+
 	const [isSet, setIsSet] = useState(false);
 
 	useEffect(() => {
+		doAfterDebounceLostChild(!!fetchItemId, () => {
+			setFetchItemId(null);
+			setClickId(fetchItems?.at(-1)?.id || mainItems?.[0]?.id);
+			toast.error("Не найден родитель выбранного элемента!");
+		});
+
 		doAfterDebounce(
 			!isSet && !isLoadingFetchItem && !!activeFolderId && !isToChangeUrl,
 			() => {
@@ -216,7 +228,7 @@ export default function LibraryTreeView({
 			className={`${className} flex flex-col h-full min-h-[300px] max-h-[calc(100vh-70px)] overflow-auto scrollbar-thin`}
 		>
 			{searchItems.length === 0 ? (
-				<p className="p-5 text-xl">Результатов не найдено</p>
+				<SearchNotFoundMessage />
 			) : (
 				searchItems.map(
 					(item) =>

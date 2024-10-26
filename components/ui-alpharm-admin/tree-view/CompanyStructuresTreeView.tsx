@@ -1,12 +1,17 @@
 import { ReactComponent as CompanyStructureIcon } from "@assets/icons/structure-company.svg";
 import { useRouter } from "@tanstack/react-router";
 import { useEffect, useId, useState } from "react";
+import { toast } from "react-toastify";
 
 import { useDoAfterDebounce } from "@/hooks/use-do-after-debounce";
 
 import { useGetCompanyStructures } from "@/api/commons/company-structures/get";
 import { useGetCompanyStructureById } from "@/api/commons/company-structures/getById";
 import { useGeCompanyParentsByParentId } from "@/api/commons/company-structures/getByParentId";
+
+import SearchNotFoundMessage, {
+	ISearchNotFoundMessageProps,
+} from "../Messages/SearchNotFoundMessage";
 
 import Tree from "./Tree";
 import { ICompanyStructure } from "@/services/commons/company-structures/company-structure.types";
@@ -25,6 +30,10 @@ interface LibraryFoldersProps {
 	checkedItems?: Array<ICompanyStructure>;
 	onCheckedItem?: ({ id }: { id: string }, checked: boolean) => void;
 	isToChangeUrl?: boolean;
+	onSearchItem?: (item: ICompanyStructure) => void;
+	onTreeItem?: (item: ICompanyStructure) => void;
+	isToSetMainItemByDefault?: boolean;
+	SearchNotFoundMessageProps?: ISearchNotFoundMessageProps;
 }
 
 const IconFirst = () => (
@@ -43,10 +52,13 @@ export default function CompanyStructuresTreeView({
 	checkedItems,
 	onCheckedItem,
 	isToChangeUrl = true,
+	onSearchItem,
+	onTreeItem,
+	isToSetMainItemByDefault = true,
+	SearchNotFoundMessageProps = {},
 }: LibraryFoldersProps): JSX.Element {
 	// SEARCH ITEMS
 	const key = useId();
-
 	const router = useRouter();
 	const activeStructureId = router.latestLocation.pathname.split("/")[3];
 
@@ -57,6 +69,8 @@ export default function CompanyStructuresTreeView({
 		key: key,
 	});
 
+	const [clickId, setClickId] = useState<string | undefined>();
+
 	// MAIN ITEMS
 	const { items: mainItems, isLoading: isLoadingMain } =
 		useGetCompanyStructures({
@@ -66,7 +80,11 @@ export default function CompanyStructuresTreeView({
 	// SET ON LOAD
 	const [isItemNotFound, setIsItemNotFound] = useState(false);
 	useEffect(() => {
-		if (mainItems?.[0] && (!activeStructureId || isItemNotFound)) {
+		if (
+			isToSetMainItemByDefault &&
+			mainItems?.[0] &&
+			(!activeStructureId || isItemNotFound)
+		) {
 			//@ts-ignore
 			setNodeOnClick?.({ ...mainItems[0], label: mainItems[0]?.name });
 			setIsItemNotFound(false);
@@ -77,10 +95,17 @@ export default function CompanyStructuresTreeView({
 					})
 					.catch((error) => console.log(error));
 		} // activeStructureId dependency BREAKS IT
-	}, [mainItems, setNodeOnClick, router, isItemNotFound, setIsItemNotFound]);
+	}, [
+		isToSetMainItemByDefault,
+		isToChangeUrl,
+		mainItems,
+		setNodeOnClick,
+		router,
+		isItemNotFound,
+		setIsItemNotFound,
+	]);
 
 	// GET ITEM ON CLICK
-	const [clickId, setClickId] = useState<string | undefined>();
 	const { item: clickedItem } = useGetCompanyStructureById(clickId);
 
 	// SET ITEM ON CLICK
@@ -95,21 +120,33 @@ export default function CompanyStructuresTreeView({
 					})
 					.catch((error) => console.log(error));
 		}
-	}, [clickedItem, setNodeOnClick, router]);
+	}, [clickedItem, setNodeOnClick, router, isToChangeUrl]);
 
 	// GET PREVIOUSLY ACTIVE ITEM
 	const [fetchItemId, setFetchItemId] = useState<string | undefined | null>(
 		activeStructureId
 	);
 	const [fetchItems, setFetchItems] = useState<ICompanyStructure[]>([]);
-	const { item: fetchItem, isLoading: isLoadingFetchItem } =
-		useGetCompanyStructureById(fetchItemId || undefined);
+	const {
+		item: fetchItem,
+		isLoading: isLoadingFetchItem,
+		setItem: setFetchItem,
+	} = useGetCompanyStructureById(fetchItemId || undefined);
 
 	const { doAfterDebounce } = useDoAfterDebounce();
 	const { doAfterDebounce: doAfterDebounceFetch } = useDoAfterDebounce();
+	const { doAfterDebounce: doAfterDebounceLostChild } =
+		useDoAfterDebounce(3000);
+		
 	const [isSet, setIsSet] = useState(false);
 
 	useEffect(() => {
+		doAfterDebounceLostChild(!!fetchItemId, () => {
+			setFetchItemId(null);
+			setClickId(fetchItems?.at(-1)?.id || mainItems?.[0]?.id);
+			toast.error("Не найден родитель выбранного элемента!");
+		});
+
 		doAfterDebounceFetch(
 			!isLoadingFetchItem && (fetchItem?.length === 0 || !fetchItem?.[0]),
 			() => {
@@ -144,6 +181,9 @@ export default function CompanyStructuresTreeView({
 			fetchItem?.[0] &&
 			!fetchItems.some((el) => el.id === fetchItem?.[0]?.id)
 		) {
+			if (!fetchItem[0].parentId && fetchItems.length > 0)
+				setClickId(fetchItems.at(-1)?.id);
+
 			setFetchItemId(fetchItem[0].parentId);
 			setFetchItems((s) => (fetchItem[0] ? [fetchItem[0], ...s] : s));
 		}
@@ -160,6 +200,7 @@ export default function CompanyStructuresTreeView({
 		dontShowItemIds,
 		isSet,
 		setIsSet,
+		doAfterDebounceFetch,
 	]);
 
 	// FETCHING CHILDREN
@@ -169,7 +210,7 @@ export default function CompanyStructuresTreeView({
 
 	return isSearch && searchItems ? (
 		searchItems.length === 0 ? (
-			<p className="p-5 text-xl">Результатов не найдено</p>
+			<SearchNotFoundMessage {...SearchNotFoundMessageProps} />
 		) : (
 			<div
 				className={`${className} flex flex-col h-full max-h-[calc(100vh-70px)] overflow-auto scrollbar-thin`}
@@ -178,16 +219,25 @@ export default function CompanyStructuresTreeView({
 					// item.isSearchResult &&
 					<div
 						key={item.id}
-						className="hover:bg-[var(--color-inactive)] cursor-pointer py-4 px-5"
-						//@ts-ignore
-						onClick={() => setNodeOnClick?.({ ...item, label: item.name })}
+						className={`${clickId === item.id ? "bg-[var(--color-inactive)]" : ""} text-left hover:bg-[var(--color-inactive)] cursor-pointer py-4 px-5`}
+						onClick={() => {
+							if (isToChangeUrl) {
+								setFetchItems([]);
+								setFetchItemId(item.id);
+								setIsSet(false);
+								setIsItemNotFound(false);
+								setFetchItem(undefined);
+								onSearchItem?.(item);
+							}
+							setClickId(item.id);
+						}}
 					>
 						{/* @ts-ignore */}
-						<div>{item.name || item.label}</div>
-						<div>
+						<p>{item.name || item.label}</p>
+						<p>
 							<span className="text-[##A6A6A6]">Сотрудники: </span>
 							{item.usersCount}
-						</div>
+						</p>
 					</div>
 				))}
 			</div>
@@ -226,6 +276,9 @@ export default function CompanyStructuresTreeView({
 				firstIcon={IconFirst}
 				//
 				isToChangeUrl={isToChangeUrl}
+				//
+				// @ts-ignore
+				onItemClick={onTreeItem}
 			/>
 		</div>
 	);
