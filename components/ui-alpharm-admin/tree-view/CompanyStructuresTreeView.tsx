@@ -1,7 +1,6 @@
 import { ReactComponent as CompanyStructureIcon } from "@assets/icons/structure-company.svg";
 import { useRouter } from "@tanstack/react-router";
 import { useEffect, useId, useState } from "react";
-import { toast } from "react-toastify";
 
 import { useDoAfterDebounce } from "@/hooks/use-do-after-debounce";
 
@@ -124,27 +123,29 @@ export default function CompanyStructuresTreeView({
 
 	// GET PREVIOUSLY ACTIVE ITEM
 	const [fetchItemId, setFetchItemId] = useState<string | undefined | null>(
-		activeStructureId
+		activeStructureId || "wait"
 	);
 	const [fetchItems, setFetchItems] = useState<ICompanyStructure[]>([]);
-	const {
-		item: fetchItem,
-		isLoading: isLoadingFetchItem,
-		setItem: setFetchItem,
-	} = useGetCompanyStructureById(fetchItemId || undefined);
+	const { item: fetchItem, isLoading: isLoadingFetchItem } =
+		useGetCompanyStructureById(
+			fetchItemId || undefined,
+			!!fetchItemId &&
+				fetchItemId !== "wait" &&
+				(mainItems?.[0] && fetchItemId === mainItems?.[0]?.id ? false : true)
+		);
 
 	const { doAfterDebounce } = useDoAfterDebounce();
 	const { doAfterDebounce: doAfterDebounceFetch } = useDoAfterDebounce();
 	const { doAfterDebounce: doAfterDebounceLostChild } =
 		useDoAfterDebounce(3000);
-		
+
 	const [isSet, setIsSet] = useState(false);
 
 	useEffect(() => {
 		doAfterDebounceLostChild(!!fetchItemId, () => {
 			setFetchItemId(null);
 			setClickId(fetchItems?.at(-1)?.id || mainItems?.[0]?.id);
-			toast.error("Не найден родитель выбранного элемента!");
+			// toast.error("Не найден родитель выбранного элемента!");
 		});
 
 		doAfterDebounceFetch(
@@ -208,14 +209,18 @@ export default function CompanyStructuresTreeView({
 	const { item: childrenItems, isLoading: isLoadingChildren } =
 		useGeCompanyParentsByParentId(nodeId);
 
-	return isSearch && searchItems ? (
-		searchItems.length === 0 ? (
+	const filteredSearchItems = searchItems?.filter(
+		(item) => !dontShowItemIds?.includes(item.id)
+	);
+
+	return isSearch && filteredSearchItems ? (
+		filteredSearchItems.length === 0 ? (
 			<SearchNotFoundMessage {...SearchNotFoundMessageProps} />
 		) : (
 			<div
 				className={`${className} flex flex-col h-full max-h-[calc(100vh-70px)] overflow-auto scrollbar-thin`}
 			>
-				{searchItems.map((item) => (
+				{filteredSearchItems.map((item) => (
 					// item.isSearchResult &&
 					<div
 						key={item.id}
@@ -267,9 +272,9 @@ export default function CompanyStructuresTreeView({
 				childrenItems={childrenItems}
 				isLoadingChildren={isLoadingChildren}
 				//
-				loadItems={
-					fetchItems && fetchItems?.length !== 0 ? fetchItems : mainItems
-				}
+				loadItems={[...(mainItems || []), ...fetchItems].filter(
+					(item, i, arr) => !arr.slice(i + 1).some((el) => el.id === item.id)
+				)}
 				isLoadingLoadItems={!!fetchItemId}
 				//
 				icon={undefined}

@@ -103,7 +103,7 @@ export function handleChangeItem({
 				allVisibleBricks.filter((item) => item.parentId === node?.parentId)
 					.length;
 
-			// console.log(arr, node, shouldAddParent);
+		
 			if (!node?.parentId)
 				return node && shouldAddParent ? [...arr, node] : arr;
 

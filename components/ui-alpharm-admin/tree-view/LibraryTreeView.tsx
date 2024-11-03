@@ -1,6 +1,5 @@
 import { useRouter } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { toast } from "react-toastify";
 
 import { ReactComponent as IconFolder } from "@/assets/icons/folder.svg";
 
@@ -150,13 +149,17 @@ export default function LibraryTreeView({
 
 	// GET PREVIOUSLY ACTIVE ITEM
 	const [fetchItemId, setFetchItemId] = useState<string | undefined | null>(
-		activeFolderId
+		activeFolderId || "wait"
 	);
 	const [fetchItems, setFetchItems] = useState<ILibraryFolder[]>([]);
 	const { items: fetchItem, isLoading: isLoadingFetchItem } =
 		useGetLibraryFoldersById({
 			folderTypeId: folderTypeId,
 			id: fetchItemId,
+			enabled:
+				!!fetchItemId &&
+				fetchItemId !== "wait" &&
+				(mainItems?.[0] && fetchItemId === mainItems?.[0]?.id ? false : true),
 		});
 
 	const { doAfterDebounce: doAfterDebounceLostChild } =
@@ -168,7 +171,7 @@ export default function LibraryTreeView({
 		doAfterDebounceLostChild(!!fetchItemId, () => {
 			setFetchItemId(null);
 			setClickId(fetchItems?.at(-1)?.id || mainItems?.[0]?.id);
-			toast.error("Не найден родитель выбранного элемента!");
+			// toast.error("Не найден родитель выбранного элемента!");
 		});
 
 		doAfterDebounce(
@@ -223,14 +226,18 @@ export default function LibraryTreeView({
 			folderTypeId: folderTypeId,
 		});
 
-	return customSearch && searchItems ? (
+	const filteredSearchItems = searchItems?.filter(
+		(item) => !dontShowItemIds?.includes(item.id)
+	);
+
+	return customSearch && filteredSearchItems ? (
 		<div
 			className={`${className} flex flex-col h-full min-h-[300px] max-h-[calc(100vh-70px)] overflow-auto scrollbar-thin`}
 		>
-			{searchItems.length === 0 ? (
+			{filteredSearchItems.length === 0 ? (
 				<SearchNotFoundMessage />
 			) : (
-				searchItems.map(
+				filteredSearchItems.map(
 					(item) =>
 						item.isSearchResult && (
 							<div
@@ -268,9 +275,9 @@ export default function LibraryTreeView({
 				childrenItems={childrenItems}
 				isLoadingChildren={isLoadingChildren}
 				//
-				loadItems={
-					fetchItems && fetchItems?.length !== 0 ? fetchItems : mainItems
-				}
+				loadItems={[...(mainItems || []), ...fetchItems].filter(
+					(item, i, arr) => !arr.slice(i + 1).some((el) => el.id === item.id)
+				)}
 				isLoadingLoadItems={!!fetchItemId}
 				//
 				icon={icon && <IconFolder className="relative mr-2" />}

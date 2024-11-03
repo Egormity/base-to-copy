@@ -111,10 +111,6 @@ const TreeView: FC<ITreeViewProps> = ({
 
 	isToChangeUrl,
 }) => {
-	loadItems = loadItems?.filter((item, i, arr) =>
-		arr.slice(i + 1).every((el) => el.id !== item.id)
-	);
-
 	// SET TREE DATA
 	const [treeData, setTreeData] = useState<Array<ITreeNode> | undefined>([]);
 
@@ -282,7 +278,9 @@ const TreeView: FC<ITreeViewProps> = ({
 						return {
 							...node,
 							children: childrenItems.filter(
-								(item) => item.parentId === node.id
+								(item, i, arr) =>
+									item.parentId === node.id &&
+									!arr.slice(i + 1).some((nextItem) => nextItem.id === item.id)
 							),
 						};
 					}
@@ -334,12 +332,12 @@ const TreeView: FC<ITreeViewProps> = ({
 				?.filter((node) => {
 					return (
 						// FILTER ERROR WHEN ITEM IS NOT MOVED
-						// !revalidate.some(
-						// 	(item) =>
-						// 		node.parentId &&
-						// 		node.id === item.newItem.id &&
-						// 		node.parentId !== item.newItem.parentId
-						// ) &&
+						!revalidate.some(
+							(item) =>
+								node.parentId &&
+								node.id === item.newItem.id &&
+								node.parentId !== item.newItem.parentId
+						) &&
 						// FILTER DELETED
 						// !deleted.some((item) => item.id === node.id) &&
 						// FILTER HIDDEN ITEMS
@@ -447,7 +445,6 @@ const TreeView: FC<ITreeViewProps> = ({
 							) : // : (node.hasChildren && node.children === undefined) ||
 							//   revalidate.some((item) => item.newItem.parentId === node.id) ? (
 							// <span />
-
 							// )
 							node.hasChildren ? (
 								<span />
@@ -503,6 +500,7 @@ const TreeView: FC<ITreeViewProps> = ({
 			</div>
 		);
 	} else {
+		//@ts-ignore
 		apiRef.current?.focusItem(null, clickId);
 
 		return (

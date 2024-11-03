@@ -1,6 +1,5 @@
 import { useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 
 import { useDoAfterDebounce } from "@/hooks/use-do-after-debounce";
 
@@ -93,33 +92,35 @@ export default function BricksTreeView({
 
 	// GET ITEM ON CLICK
 	const [clickId, setClickId] = useState<string | undefined>();
-	const { items: clickedItem } = useGetBricks({ id: clickId });
+	// const { items: clickedItem } = useGetBricks({ id: clickId });
 
 	// SET ITEM ON CLICK
 	useEffect(() => {
-		if (clickedItem?.[0]) {
-			setNodeOnClick?.(clickedItem[0]);
-			isToChangeUrl &&
-				router
-					.navigate({
-						to: `/manual/bricks/brick/${clickedItem[0].id}`.toString(),
-					})
-					.catch((error) => console.log(error));
-		}
-	}, [clickedItem, setNodeOnClick, router, isToChangeUrl]);
+		isToChangeUrl &&
+			clickId &&
+			router
+				.navigate({
+					to: `/manual/bricks/brick/${clickId}`.toString(),
+				})
+				.catch((error) => console.log(error));
+	}, [setNodeOnClick, router, isToChangeUrl, clickId]);
 
 	// GET PREVIOUSLY ACTIVE ITEM
 	const [fetchItemId, setFetchItemId] = useState<string | undefined | null>(
-		activeStructureId
+		activeStructureId || "wait"
 	);
 	const [fetchItems, setFetchItems] = useState<IBrick[]>([]);
+
 	const {
 		items: fetchItem,
 		isLoading: isLoadingFetchItem,
 		setItems: setFetchItem,
 	} = useGetBricks({
 		id: fetchItemId || undefined,
-		enabled: !!fetchItemId,
+		enabled:
+			!!fetchItemId &&
+			fetchItemId !== "wait" &&
+			(mainItems?.[0] && fetchItemId === mainItems?.[0]?.id ? false : true),
 	});
 
 	const { doAfterDebounce } = useDoAfterDebounce();
@@ -133,7 +134,7 @@ export default function BricksTreeView({
 		doAfterDebounceLostChild(!!fetchItemId, () => {
 			setFetchItemId(null);
 			setClickId(fetchItems?.at(-1)?.id || mainItems?.[0]?.id);
-			toast.error("Не найден родитель выбранного элемента!");
+			// toast.error("Не найден родитель выбранного элемента!");
 		});
 
 		doAfterDebounceFetch(
@@ -202,13 +203,17 @@ export default function BricksTreeView({
 		return <SearchNotFoundMessage />;
 	}
 
+	const filteredSearchItems = searchItems?.filter(
+		(item) => !dontShowItemIds?.includes(item.id)
+	);
+
 	return (
 		<>
-			{customSearch && searchItems ? (
+			{customSearch && filteredSearchItems ? (
 				<div
 					className={`${className} flex flex-col h-full max-h-[calc(100vh-70px)] overflow-auto scrollbar-thin`}
 				>
-					{searchItems?.map(
+					{filteredSearchItems?.map(
 						(item) =>
 							item.isSearchResult && (
 								<div
@@ -259,9 +264,10 @@ export default function BricksTreeView({
 						childrenItems={childrenItems}
 						isLoadingChildren={isLoadingChildren}
 						//
-						loadItems={
-							fetchItems && fetchItems?.length !== 0 ? fetchItems : mainItems
-						}
+						loadItems={[...(mainItems || []), ...fetchItems].filter(
+							(item, i, arr) =>
+								!arr.slice(i + 1).some((el) => el.id === item.id)
+						)}
 						isLoadingLoadItems={!!fetchItemId}
 						//
 						icon={undefined}
